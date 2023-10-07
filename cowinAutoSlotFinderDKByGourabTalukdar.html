@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
+
+    <title>CoWIN-Auto Slot Finder</title>
+
+    <style type="text/css">
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
+        body{
+            background-color: rgba(232,242,254,1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container{
+            position: relative;
+            max-width: 500px;
+            width: 100%;
+            background-color: #fff;
+            min-height: 100vh;
+            padding: 2rem 1rem 4rem 1rem;
+            box-shadow: 1px 1px 1rem 0 rgba(0, 0, 0, 0.2);
+        }
+        .header h1,p{
+            text-align: center;
+            color: rgba(33,33,33 ,1);
+        }
+        .header h1{
+            font-size: 1.6rem;     
+        }
+        .header p{
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            margin-top: .2rem;
+        }
+
+        form{
+            margin-top: 1.2rem;
+        }
+        form > div{
+            background-color: rgba(245,245,245 ,1);
+            padding: .5rem;
+            border-radius: .4rem;
+
+        }
+       
+        form fieldset:nth-child(2){
+            margin: 10px 0;
+        }
+        form fieldset label{
+            padding-left: .1rem;
+            padding-right: 1rem;
+        }
+        form fieldset label,
+        form fieldset input{
+            cursor: pointer;
+        }
+        #pin{
+            width: 100%;
+            /*background-color: red;*/
+            border: none;
+            outline: none;
+            border-bottom: 1px solid gray;
+            height: 100%;
+            font-size: 1rem;
+            background-color: transparent;
+            padding-left: .5rem;
+        }
+        .both-pin-container{
+            width: 100%;
+            display: inline-block;
+        }
+        #switch{
+            text-decoration: underline; 
+            cursor: pointer;
+            color: rgba(106,27,154 ,1);
+            width: 100%;
+            display: inline-block;
+            text-align: right;
+            margin-top: .5rem;
+        }
+        form input[type="date"]{
+            background-color: transparent;
+            border: none;
+            outline: none;
+            width: 100%;
+        }
+        input#search{
+            width: 65%;
+            display: block;
+            margin: 0 auto;
+            margin-top: 1rem;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            border-radius: .5rem;
+            padding: 8px 0;
+            outline: none;
+            border: none;
+            background-color: rgba(255,179,0 ,1);
+            cursor: pointer;
+        }
+
+
+        #data-div{
+            background-color: rgba(245,245,245 ,1);
+            padding: .5rem;
+            border-radius: .4rem; 
+            margin-top: 1.5rem;
+            display: none;
+        }
+        #data-div fieldset > div{
+            display: flex;
+        }
+        #data-div fieldset > div > span{
+            padding-left: .5rem;
+        }
+        #info{
+            text-align: left;
+            margin-top: 1rem;
+        }
+        #contact-me{
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            padding-top: .5rem;
+            padding-bottom: .5rem;
+            background-color: rgba(255,179,0 ,1);
+            z-index: 3;
+        }
+       
+        /*ulility style*/
+         fieldset{
+            padding: 0.6rem 1rem 0.8rem 1rem;
+            border-radius: .3rem;
+            position: relative;
+        }
+        fieldset legend{
+            padding-left: .5rem;
+        }
+        fieldset select{
+            background-color: transparent;
+            border: none;
+            outline: none;
+        }
+        .no-display{
+            display: none;
+        }
+        .display{
+            display: inline-block;
+        }
+
+
+
+
+
+
+        /*loader style here*/
+        :root{
+            --innerBox: 70px;
+            --loadingBox: 20px;
+            --loadingBoxPosition: 80%;
+        }
+        .wrapper{
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .wrapper .inner-box{
+            height: var(--innerBox);
+            width: var(--innerBox);
+            position: relative;
+        }
+        .wrapper .inner-box div{
+            height: var( --loadingBox );
+            width: var( --loadingBox );
+            background-color: red;
+            box-shadow: 0px 5px 5px 0px rgba(0,0,0,0.5);
+            border-radius: 30%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            visibility: hidden;
+            animation: LoadingBox 2s linear infinite;
+        }
+        
+        @keyframes LoadingBox{
+            0%{
+                top: 0;
+                left: 0;
+                visibility: visible;
+            }
+            12.5%{
+                top: 0;
+                left: var(--loadingBoxPosition);
+            }
+            25%{
+                top: 0;
+                left: var(--loadingBoxPosition);
+            }
+            37.5%{
+                top: var(--loadingBoxPosition);
+                left: var(--loadingBoxPosition);
+            }
+            50%{
+                top: var(--loadingBoxPosition);
+                left: var(--loadingBoxPosition);
+            }
+            62.5%{
+                top: var(--loadingBoxPosition);
+                left: 0;
+            }
+            75%{
+                top: var(--loadingBoxPosition);
+                left: 0;
+            }
+            87.5%{
+                top: 0;
+                left: 0;
+            }
+            100%{
+                top: 0;
+                left: 0;
+            }
+        }
+        .inner-box div:nth-child(1){
+            animation-delay: 0s;
+            background-color: rgba(25,118,210 ,1);
+        }
+        .inner-box div:nth-child(2){
+            animation-delay: 0.5s;
+            background-color: rgba(142,36,170 ,1);
+        }
+        .inner-box div:nth-child(3){
+            animation-delay: 1s;
+            background-color: rgba(0,150,136 ,1);
+        }
+        .inner-box div:nth-child(4){
+            animation-delay: 1.5s;
+            background-color: rgba(211,47,47 ,1);
+        }
+    </style>
+
+</head>
+<body>
+     
+    <!-- ---------------------------------------------loader html here -->
+    <div class="wrapper">
+        <div class="inner-box">
+            <div id="box1"></div>           
+            <div id="box2"></div>
+            <div id="box3"></div>
+            <div id="box4"></div>           
+        </div>
+    </div>
+
+
+    <!---------------------------------------------------- original content is here -->
+
+	<div class="container no-display">
+        <div class="header">
+            <h1>Auto Slot Finder</h1>
+            <p>Find vaccination slot automatically</p>
+        </div>   
+
+        <form>
+           <div>
+            <!------------------------- fieldset for inputing the PIN code -->
+                <fieldset>
+                    <legend>PIN Code:</legend>
+            
+                        <!-- <input type="radio" name="pin" value="741137" id="pin1" onchange="clearResult()">
+                        <label for="pin1">741137</label>
+
+                        <input type="radio" name="pin" value="741150" id="pin2" onchange="clearResult()">
+                        <label for="pin2">741150</label> -->
+
+                
+                    <label class="both-pin-container no-display">Only (741137 & 741150)</label>
+                    
+
+                    <input type="text" id="pin" class="" placeholder="Enter your PIN code" autofocus="on" autocomplete="off" oninput="clearResult()" required>
+
+                    <span id="switch">switch?</span>
+                </fieldset>
+
+                <!------------------------- fieldset for inputing the   DOSE Type -->
+                 <fieldset>
+                    <legend>Dose Info:</legend>
+            
+                    <input type="radio" name="dose" value="dose1" id="dose1" onchange="clearResult()">
+                    <label for="dose1">Dose 1</label>
+
+                    <input type="radio" name="dose" value="dose2" id="dose2" onchange="clearResult()">
+                    <label for="dose2">Dose 2</label>
+
+                </fieldset>
+
+                <!------------------------- fieldset for inputing the DATE info -->
+                <fieldset>
+                    <legend>Date Info:</legend>
+                    <select id="date" onchange="clearResult()">
+                        <option value="today">
+                                Today
+                        </option>
+                        <option value="tomorrow">
+                                Tomorrow
+                        </option>
+                        <option value="next-next-Day">
+                                Next Next Day
+                        </option>
+                    </select>
+                </fieldset>
+           </div>
+
+            <!-- <button id="search">Search</button> -->
+            <input type="submit" id="search" name="">
+        </form>
+
+        <!-- ----------------------------this is for showing the RESULT -->
+        <div id="data-div">
+            <fieldset>
+                <legend>Result:</legend>
+
+                    <div>
+                        <label><b>Center:</b></label>
+                        <span id="center-name">Loading...</span> 
+                    </div>
+                    <div>
+                        <label><b>Slot:</b></label>
+                        <span id="slot">Loading...</span>
+                    </div>
+                    <div>
+                        <label><b>Date:</b></label>
+                       <span id="searching-date">Loading...</span>
+                    </div>
+                    <div>
+                        <label><b>PIN:</b></label>
+                       <span id="searching-pin">Loading...</span>
+                    </div>                                   
+                
+            </fieldset>
+            <p id="info">Your search will be made again after FEW Seconds</p>
+        </div>
+
+        <div id="contact-me">Developed & designed by <a href="mailto:iamgourabtalukdar@gmail.com?cc=aruntalukder09@gmail.com&subject=Regarding the FEEDBACK of Auto Slot Finder of COVID-VACCINE ">@Gourab</a></div>
+    </div>
+
+
+
+
+
+
+
+     <script type="text/javascript">
+     	
+         clearResult = () => {
+            document.getElementById("center-name").innerHTML = "";
+            document.getElementById("slot").innerHTML = "";
+            document.getElementById("searching-date").innerHTML = "";
+            document.getElementById("searching-pin").innerHTML = "";
+
+            removeInterval();
+        }
+
+        const displayData = (data,dose, reqDate, pinCode) => {
+
+            const centerName = document.getElementById("center-name");
+            const slot = document.getElementById("slot");
+            const searchingDate = document.getElementById("searching-date");
+            const searchingPin = document.getElementById("searching-pin");
+            let dataLength = (data.sessions != undefined) ? data.sessions.length : 0 ;
+            
+            centerName.innerHTML = "";
+            slot.innerHTML = "";
+            searchingDate.innerHTML = " "+reqDate;
+            searchingPin.innerHTML = " "+pinCode;
+
+            centerName.style.color ="#000";
+            slot.style.color ="#000";
+            searchingPin.style.color = "#000";
+
+            if(dataLength == 0){
+                centerName.innerHTML = " Center is Not Available";
+                slot.innerHTML = " 0";
+            }else{
+                
+                    switch(dose){
+                        case 'dose1':
+                    
+                            for(let i=0; i<dataLength; i++){
+                                if(data.sessions[i].available_capacity_dose1 > 0){
+                
+                                    centerName.innerHTML += (dataLength==1) ? ` ${i+1}) ${data.sessions[i].name}` : ` ${i+1}) ${data.sessions[i].name},<br> `;
+
+                                    slot.innerHTML += (dataLength==1) ? ` ${i+1}) ${data.sessions[i].available_capacity_dose1}` : ` ${i+1}) ${data.sessions[i].available_capacity_dose1},<br> `;
+                                    audio.play();
+                                }
+                                else{
+                                    centerName.innerHTML += (dataLength==1) ? ` ${i+1}) ${data.sessions[i].name}` : ` ${i+1}) ${data.sessions[i].name},<br> `;
+
+                                    slot.innerHTML += (dataLength==1) ? ` ${i+1}) ${data.sessions[i].available_capacity_dose1}` : ` ${i+1}) ${data.sessions[i].available_capacity_dose1},<br> `;
+                                }
+                                
+                            }
+                            break;
+
+                        case 'dose2':
+                        
+                            for(let i=0; i<dataLength; i++){
+                                if(data.sessions[i].available_capacity_dose2 > 0){
+                        
+                                    centerName.innerHTML += (dataLength==1) ? ` ${i+1}) ${data.sessions[i].name}` : ` ${i+1}) ${data.sessions[i].name},<br> `;
+
+                                    slot.innerHTML += (dataLength==1) ? ` ${i+1}) ${data.sessions[i].available_capacity_dose2}` : ` ${i+1}) ${data.sessions[i].available_capacity_dose2},<br> `;
+                                    audio.play();
+                                }
+                                else{
+                                    centerName.innerHTML += (dataLength==1) ? ` ${i+1}) ${data.sessions[i].name}` : ` ${i+1}) ${data.sessions[i].name},<br> `;
+
+                                    slot.innerHTML += (dataLength==1) ? ` ${i+1}) ${data.sessions[i].available_capacity_dose2}` : ` ${i+1}) ${data.sessions[i].available_capacity_dose2},<br> `;
+                                }
+                                
+                            }
+                            break;
+                        default:
+                            // alert("Please Select DOSE Type");
+                    }
+
+                }
+            }
+        
+        const fetchData = async (pinCode, reqDate) => {
+                // console.log(pinCode);
+                try{
+                    const resp = await fetch(`https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/findByPin?pincode=${pinCode}&date=${reqDate}`);
+                    const data = await resp.json();
+                    return data;
+                }catch(err){
+                    document.write(`${err.stack}`);
+                }
+        }
+
+        const getData = (pinCode, dose, reqDate) => {
+
+                fetchData(pinCode, reqDate).then(data => {
+
+                        displayData(data, dose, reqDate, pinCode);
+                    });
+        }
+
+        const generateDate = (date) => {
+
+            let today = new Date();
+
+            let reqDate;
+            if(date === 'today'){
+
+                let dd = (today.getDate()) < 10 ? `0${today.getDate()}` : today.getDate();
+                let mm = (today.getMonth() + 1) < 10 ? `0${today.getMonth()+1}` : today.getMonth()+1;
+                let yy =  today.getFullYear(); 
+
+                reqDate = `${dd}-${mm}-${yy}`;
+                
+            }else if(date === 'tomorrow'){ 
+
+                let tomorrow = new Date(today);
+                tomorrow.setDate(tomorrow.getDate()+1);
+
+                let dd = (tomorrow.getDate()) < 10 ? `0${tomorrow.getDate()}` : tomorrow.getDate();
+                let mm = (tomorrow.getMonth() + 1) < 10 ? `0${tomorrow.getMonth()+1}` : tomorrow.getMonth()+1;
+                let yy =  tomorrow.getFullYear();
+                reqDate = `${dd}-${mm}-${yy}`;
+            }
+            else{
+
+                let nextNextDay = new Date(today);
+                nextNextDay.setDate(nextNextDay.getDate()+2);
+
+                let dd = (nextNextDay.getDate()) < 10 ? `0${nextNextDay.getDate()}` : nextNextDay.getDate();
+                let mm = (nextNextDay.getMonth() + 1) < 10 ? `0${nextNextDay.getMonth()+1}` : nextNextDay.getMonth()+1;
+                let yy =  nextNextDay.getFullYear();
+                reqDate = `${dd}-${mm}-${yy}`;
+            }
+
+            return reqDate;
+        }
+
+        const showLoading = () => {
+                document.getElementById("center-name").innerHTML = " Loading...";
+                document.getElementById("slot").innerHTML = " Loading...";
+                document.getElementById("searching-pin").innerHTML = " Loading...";
+                document.getElementById("center-name").style.color="rgba(76,175,80,1)";
+                document.getElementById("slot").style.color="rgba(76,175,80,1)";
+                document.getElementById("searching-pin").style.color="rgba(76,175,80,1)";
+        }
+        const removeInterval = () => {
+            if (interval1 != 0){
+                clearInterval(interval1);
+                audio.pause();
+                document.getElementById('data-div').style.display = "none";
+                interval1 = 0;
+            }
+            if (interval2 != 0){
+                clearInterval(interval2);
+                audio.pause();
+                document.getElementById('data-div').style.display = "none";
+                interval2 = 0;
+            }
+        }
+
+    
+        const searchOnePinCode = () => {
+
+            const pinCode = document.getElementById("pin").value;
+            const dose = document.querySelector("input[name='dose']:checked").value;
+            const date = document.getElementById("date").value;   
+            const resultDiv = document.getElementById('data-div');
+            
+
+            resultDiv.style.display = "block";
+            audio.pause();
+
+            let reqDate =  generateDate(date);
+
+            
+
+            getData(pinCode, dose, reqDate);
+            
+
+            interval1 = setInterval(() => {
+                audio.pause();
+                
+
+                showLoading();
+
+                setTimeout(() => {
+                    getData(pinCode, dose, reqDate);
+                },1500);
+
+            },20000);
+        }
+
+
+        const searchBothPinCode = () => {
+            const pinCode = [741137,741150];
+            const dose = document.querySelector("input[name='dose']:checked").value;
+            const date = document.getElementById("date").value;   
+            const resultDiv = document.getElementById('data-div');
+            
+            resultDiv.style.display = "block";
+            audio.pause();
+
+            let reqDate =  generateDate(date);
+
+          
+
+            getData(pinCode[0], dose, reqDate);
+            
+            interval2 = setInterval(() => {
+
+                audio.pause();
+                 showLoading();
+
+                setTimeout(() => {
+                    getData(pinCode[1], dose, reqDate);
+                },1500);
+                setTimeout(() => {
+                    showLoading();
+                },12000);
+                setTimeout(() => {
+                    getData(pinCode[0], dose, reqDate);
+                },13500);
+
+            },24000);
+        }
+
+
+        const start = (searchBtn, switchBtn) => {
+            switchBtn.onclick = () => {
+
+                document.querySelector(".both-pin-container").classList.toggle("no-display");
+                document.getElementById("pin").classList.toggle("no-display");
+                document.getElementById("pin").value = '';
+
+                clearResult();
+                inputSwitch = (inputSwitch == 0) ? 1 : 0; 
+            }
+
+
+            searchBtn.onclick = (e) => {
+                e.preventDefault();
+                removeInterval();
+                showLoading();
+                if (inputSwitch == 0){
+                    searchOnePinCode();
+                }
+                else{
+                    searchBothPinCode();
+                }
+
+            }
+        
+        }
+
+
+        let interval1 = 0;
+        let interval2 = 0;
+        let inputSwitch =0;
+        const audio = new Audio("https://drive.google.com/uc?id=1Dp0Uss8Xf5oGcMRT-HL3lWq_-lD_AHYX");
+
+
+        window.onload = () => {
+            document.querySelector(".wrapper").style.display = "none";
+            document.querySelector(".container").classList.remove("no-display");
+            const searchBtn = document.getElementById('search');
+            const switchBtn = document.getElementById("switch");
+
+            start(searchBtn, switchBtn);
+
+        }
+
+
+     </script>   
+</body>
+</html>
